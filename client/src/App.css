@@ -21,6 +21,10 @@
   color: #61dafb;
 }
 
+.nav__balance {
+  padding-right: 20px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
