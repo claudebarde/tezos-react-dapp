@@ -85,6 +85,7 @@ const App = () => {
         userBalance={userBalance}
         setUserBalance={setUserBalance}
         tezbridge={tezbridge}
+        eztz={eztz}
       />
       <div className="App">
         <header className="App-header">Hello Tezos!</header>

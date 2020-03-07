@@ -33,5 +33,7 @@
   },
   "devDependencies": {
     "react-app-rewired": "^2.1.5"
-  }
+  },
+  "author": "@claudebarde",
+  "license": "MIT"
 }
