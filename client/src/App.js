@@ -7,7 +7,54 @@ import simpleStorage from "../../build/contracts/SimpleStorage.json";
 const App = () => {
   const [count, setCount] = useState(undefined);
   const [contractAddress, setContractAddress] = useState(undefined);
+  const [userAddress, setUserAddress] = useState(undefined);
+  const [userBalance, setUserBalance] = useState(undefined);
   const eztz = window.eztz;
+  const tezbridge = window.tezbridge;
+
+  const increment = async () => {
+    try {
+      const result = await tezbridge.request({
+        method: "inject_operations",
+        operations: [
+          {
+            kind: "transaction",
+            destination: contractAddress,
+            amount: "0",
+            parameters: {
+              entrypoint: "increment",
+              value: { int: "1" }
+            }
+          }
+        ]
+      });
+      console.log(result);
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
+
+  const decrement = async () => {
+    try {
+      const result = await tezbridge.request({
+        method: "inject_operations",
+        operations: [
+          {
+            kind: "transaction",
+            destination: contractAddress,
+            amount: "0",
+            parameters: {
+              entrypoint: "decrement",
+              value: { int: "1" }
+            }
+          }
+        ]
+      });
+      console.log(result);
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -19,11 +66,12 @@ const App = () => {
         setContractAddress(address);
         try {
           await eztz.node.setProvider("http://localhost:8732");
-          const storage = await eztz.contract.storage(address);
-          setCount(storage.int);
-          console.log(storage);
+          eztz.contract.watch(address, 4, storage => {
+            setCount(storage.int);
+            console.log(storage);
+          });
         } catch (error) {
-          console.log(error);
+          console.log(error.toString());
         }
       }
     })();
@@ -31,7 +79,13 @@ const App = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        userAddress={userAddress}
+        setUserAddress={setUserAddress}
+        userBalance={userBalance}
+        setUserBalance={setUserBalance}
+        tezbridge={tezbridge}
+      />
       <div className="App">
         <header className="App-header">Hello Tezos!</header>
         <div>
@@ -39,8 +93,24 @@ const App = () => {
           {contractAddress === undefined ? "loading..." : contractAddress}
         </div>
         <div>
-          Contract Storage Value: {count === undefined ? "loading..." : count}
+          Contract Storage Value:{" "}
+          <strong>{count === undefined ? "loading..." : count}</strong>
         </div>
+        <br />
+        {userAddress && (
+          <div className="field is-grouped">
+            <p className="control">
+              <button className="button is-success" onClick={increment}>
+                Increment
+              </button>
+            </p>
+            <p className="control">
+              <button className="button is-danger" onClick={decrement}>
+                Decrement
+              </button>
+            </p>
+          </div>
+        )}
       </div>
     </>
   );

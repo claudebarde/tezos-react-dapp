@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-const Navbar = () => {
-  const tezbridge = window.tezbridge;
+const Navbar = props => {
+  const {
+    userAddress,
+    setUserAddress,
+    userBalance,
+    setUserBalance,
+    tezbridge
+  } = props;
   const eztz = window.eztz;
-  const [userAddress, setUserAddress] = useState(undefined);
-  const [userBalance, setUserBalance] = useState(undefined);
 
   const initTezbridge = async () => {
     // tezbridge
@@ -19,7 +23,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar is-fixed-top">
+    <nav className="navbar is-fixed-top" style={{ paddingTop: "30px" }}>
       <div className="navbar-brand">
         <a className="navbar-item" href="https://bulma.io">
           Tezos Dapp
