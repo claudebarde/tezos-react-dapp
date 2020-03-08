@@ -1,40 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Context } from "../../context/Context";
 
-const Navbar = props => {
-  const {
-    userAddress,
-    setUserAddress,
-    userBalance,
-    setUserBalance,
-    tezbridge,
-    eztz
-  } = props;
+const Navbar = () => {
+  const { initTezbridge, userAddress, balance } = useContext(Context);
 
-  const initTezbridge = async () => {
-    // tezbridge
-    try {
-      // sets rpc host
-      let host = "";
-      if (process.env.NODE_ENV === "development") {
-        host = "http://localhost:8732";
-      } else {
-        host = "https://mainnet.tezrpc.me";
-      }
-      const rpc = await tezbridge.request({
-        method: "set_host",
-        host
-      });
-      console.log(rpc);
-      // gets user's address
-      const address = await tezbridge.request({ method: "get_source" });
-      setUserAddress(address);
-      // gets user's balance
-      const balance = await eztz.rpc.getBalance(address);
-      setUserBalance(balance);
-    } catch (error) {
-      console.log("error fetching the address or balance:", error);
-    }
-  };
+  const mutezToTez = mutez =>
+    Math.round((parseInt(mutez) / 1000000 + Number.EPSILON) * 100) / 100;
 
   return (
     <nav className="navbar is-fixed-top" style={{ paddingTop: "30px" }}>
@@ -46,10 +17,15 @@ const Navbar = props => {
       <div className="navbar-end">
         <div className="navbar-item">
           <div className="nav__balance">
-            {userBalance && `Balance: ${userBalance} µꜩ`}
+            {balance && `Balance: ${mutezToTez(balance)} ꜩ`}
           </div>
-          <button className="button is-info is-light" onClick={initTezbridge}>
-            {userAddress === undefined
+          <button
+            className={`button is-light ${
+              !userAddress ? "is-info" : "is-success"
+            }`}
+            onClick={initTezbridge}
+          >
+            {!userAddress
               ? "Connect your wallet"
               : userAddress.slice(0, 5) + "..." + userAddress.slice(-5)}
           </button>
