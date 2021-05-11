@@ -6,7 +6,7 @@
   "devDependencies": {
     "promise-retry": "^1.1.1",
     "truffle": "^5.2.0-tezos.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "@taquito/taquito": "^6.0.3-beta.0"
   },
   "scripts": {
